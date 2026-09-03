@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Navbar from "@/components/Navbar";
+import Navbar from "../components/Navbar";
 
 const allProducts = [
   { id: 1, title: "หนังสือช่างไฟฟ้ากำลัง ปวช.1", price: 120, location: "โรงอาหารกลาง", category: "หนังสือ" },

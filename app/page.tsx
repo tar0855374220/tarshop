@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Navbar from "@/components/Navbar";
+import Navbar from "./components/Navbar";
 
 const pickupLocations = [
   { id: 1, name: "โรงอาหารกลาง", icon: "🍱", desc: "โต้ะหินอ่อนฝั่งทิศตะวันออก" },
