@@ -1,4 +1,3 @@
-// app/product/page.tsx
 "use client";
 
 import { useState } from "react";
@@ -35,7 +34,7 @@ export default function ProductPage() {
           <p className="text-sm text-gray-500 dark:text-gray-400">ค้นหาอุปกรณ์การเรียน หนังสือ และสิ่งของในวิทยาลัย</p>
         </div>
 
-        {/* Filter Bar */}
+        {/* Filter Controls */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-white dark:bg-gray-900 p-4 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm">
           <input
             type="text"
@@ -69,7 +68,7 @@ export default function ProductPage() {
           </select>
         </div>
 
-        {/* Product Grid */}
+        {/* Product Items */}
         {filteredProducts.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {filteredProducts.map((item) => (
@@ -80,9 +79,6 @@ export default function ProductPage() {
                 <div>
                   <div className="h-36 sm:h-44 bg-gray-200 dark:bg-gray-800 w-full relative flex items-center justify-center text-gray-400">
                     <span className="text-xs">📸 รูปสินค้า</span>
-                    <span className="absolute top-2 left-2 text-[10px] bg-black/60 text-white backdrop-blur-md px-2 py-0.5 rounded-full">
-                      {item.category}
-                    </span>
                   </div>
                   <div className="p-3 space-y-1.5">
                     <h3 className="font-semibold text-sm line-clamp-2 text-gray-800 dark:text-gray-100">
@@ -93,7 +89,7 @@ export default function ProductPage() {
                     </p>
                   </div>
                 </div>
-                <div className="p-3 pt-[0px] text-[11px] text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-800/60 mt-2 pt-2">
+                <div className="p-3 pt-0 text-[11px] text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-800/60 mt-2">
                   <span>📍 นัดรับ: {item.location}</span>
                 </div>
               </div>

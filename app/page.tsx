@@ -1,37 +1,106 @@
-import Link from 'next/link';
+import Link from "next/link";
+import Navbar from "@/components/Navbar";
+
+const pickupLocations = [
+  { id: 1, name: "โรงอาหารกลาง", icon: "🍱", desc: "โต้ะหินอ่อนฝั่งทิศตะวันออก" },
+  { id: 2, name: "หน้าตึกอำนวยการ", icon: "🏛️", desc: "ใกล้วงเวียนเสาธง" },
+  { id: 3, name: "หน้าห้องสมุด", icon: "📚", desc: "จุดพักคอยชั้น 1" },
+  { id: 4, name: "ช่างยนต์ / โรงฝึกงาน", icon: "🔧", desc: "หน้าตึกปฏิบัติการ" },
+];
+
+const mockProducts = [
+  { id: 1, title: "หนังสือช่างไฟฟ้ากำลัง ปวช.1", price: 120, location: "โรงอาหารกลาง", category: "หนังสือ" },
+  { id: 2, title: "ชุดนักศึกษาชาย มือสอง สภาพ 95%", price: 200, location: "หน้าห้องสมุด", category: "เครื่องแต่งกาย" },
+  { id: 3, title: "เครื่องคิดเลขวิทยาศาสตร์ Casio", price: 350, location: "หน้าตึกอำนวยการ", category: "อุปกรณ์การเรียน" },
+  { id: 4, title: "ไม้ที (T-Square) สำหรับเขียนแบบ", price: 150, location: "ช่างยนต์ / โรงฝึกงาน", category: "อุปกรณ์การเรียน" },
+];
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen p-4 max-w-7xl mx-auto space-y-6">
-      {/* Hero Banner TarShop */}
-      <section className="p-6 md:p-10 rounded-3xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white text-center shadow-lg">
-        <span className="px-3 py-1 text-xs font-semibold bg-white/20 rounded-full inline-block mb-3 backdrop-blur-sm">
-          Campus Marketplace
-        </span>
-        <h1 className="text-3xl md:text-5xl font-black tracking-tight">Welcome to TarShop</h1>
-        <p className="mt-2 text-sm md:text-base opacity-90 max-w-xl mx-auto">
-          ศูนย์รวมการซื้อขายสินค้ามือหนึ่ง-มือสองของคนในวิทยาลัย ซื้อง่าย ปลอดภัย นัดรับได้ทันที
-        </p>
-      </section>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors">
+      <Navbar />
 
-      {/* Quick Navigation / Categories */}
-      <section className="flex justify-between items-center">
-        <h2 className="text-lg font-bold">สินค้ามาใหม่ใน TarShop</h2>
-        <Link href="/product" className="text-sm text-blue-600 dark:text-blue-400 font-medium hover:underline">
-          ดูทั้งหมด →
-        </Link>
-      </section>
-
-      {/* Grid สินค้าตัวอย่าง (Mobile 2 col, Desktop 4 col) */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-        <div className="border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden bg-white dark:bg-gray-800/50 hover:shadow-md transition-shadow">
-          <div className="h-36 bg-gray-200 dark:bg-gray-700 w-full" />
-          <div className="p-3 space-y-1">
-            <h3 className="font-medium text-sm line-clamp-1">หนังสือเรียนวิชาช่าง</h3>
-            <p className="text-blue-600 dark:text-blue-400 font-bold">฿150</p>
+      <main className="max-w-7xl mx-auto px-4 py-6 space-y-8">
+        {/* Banner */}
+        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 p-6 sm:p-10 text-white shadow-xl">
+          <div className="relative z-10 space-y-3 max-w-2xl">
+            <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-semibold tracking-wide">
+              🎓 ตลาดนัดเด็กวิทยาลัย
+            </span>
+            <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
+              TarShop
+            </h1>
+            <p className="text-sm sm:text-base opacity-90 leading-relaxed">
+              ซื้อง่าย ขายคล่อง ส่งต่อของไม่ได้ใช้ให้รุ่นน้อง นัดรับได้ทันทีในรั้ววิทยาลัย
+            </p>
+            <div className="pt-2">
+              <Link
+                href="/product"
+                className="inline-block px-5 py-2.5 bg-white text-blue-600 rounded-xl font-bold text-sm hover:bg-opacity-90 shadow-md transition-all active:scale-95"
+              >
+                เลือกซื้อสินค้า
+              </Link>
+            </div>
           </div>
-        </div>
-      </div>
-    </main>
+        </section>
+
+        {/* Pickup Points */}
+        <section className="space-y-4">
+          <div>
+            <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2">
+              📍 จุดนัดรับยอดนิยมในวิทยาลัย
+            </h2>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {pickupLocations.map((loc) => (
+              <div
+                key={loc.id}
+                className="p-4 rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm space-y-1"
+              >
+                <div className="text-2xl">{loc.icon}</div>
+                <h3 className="font-bold text-sm text-gray-800 dark:text-gray-200">{loc.name}</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400">{loc.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Featured Products */}
+        <section className="space-y-4">
+          <div className="flex justify-between items-end">
+            <h2 className="text-lg sm:text-xl font-bold">🔥 สินค้ามาใหม่</h2>
+            <Link href="/product" className="text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline">
+              ดูทั้งหมด →
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+            {mockProducts.map((item) => (
+              <Link
+                key={item.id}
+                href="/product"
+                className="group rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden shadow-sm hover:border-blue-500/50 transition-all flex flex-col justify-between"
+              >
+                <div>
+                  <div className="h-36 sm:h-44 bg-gray-200 dark:bg-gray-800 w-full relative flex items-center justify-center text-gray-400">
+                    <span className="text-xs">📸 รูปสินค้า</span>
+                  </div>
+                  <div className="p-3 space-y-1.5">
+                    <h3 className="font-semibold text-sm line-clamp-2 text-gray-800 dark:text-gray-100 group-hover:text-blue-600">
+                      {item.title}
+                    </h3>
+                    <p className="text-base font-extrabold text-blue-600 dark:text-blue-400">
+                      ฿{item.price}
+                    </p>
+                  </div>
+                </div>
+                <div className="p-3 pt-0 text-[11px] text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-800/60 mt-2">
+                  <span>📍 นัดรับ: {item.location}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      </main>
+    </div>
   );
 }

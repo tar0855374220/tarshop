@@ -1,4 +1,3 @@
-// components/Navbar.tsx
 "use client";
 
 import Link from "next/link";
@@ -34,7 +33,7 @@ export default function Navbar() {
             สินค้าทั้งหมด
           </Link>
 
-          {/* ปุ่มเปลี่ยน Dark/Light Mode */}
+          {/* ปุ่มสลับ Theme */}
           {mounted && (
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
