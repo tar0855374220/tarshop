@@ -37,10 +37,10 @@ export default function Navbar() {
           {mounted && (
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="p-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:ring-2 hover:ring-blue-500 transition-all"
+              className="p-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:ring-2 hover:ring-blue-500 transition-all border border-gray-200 dark:border-gray-700"
               aria-label="Toggle Theme"
             >
-              {theme === "dark" ? "☀️" : "🌙"}
+              {theme === "dark" ? "☀️ โหมดสว่าง" : "🌙 โหมดมืด"}
             </button>
           )}
         </div>
