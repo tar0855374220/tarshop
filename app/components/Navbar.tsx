@@ -24,23 +24,31 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* Navigation & Theme Toggle */}
-        <div className="flex items-center gap-3">
+        {/* Navigation & Actions */}
+        <div className="flex items-center gap-2 sm:gap-3">
           <Link
             href="/product"
-            className="text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-2 sm:px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
           >
             สินค้าทั้งหมด
+          </Link>
+
+          {/* ปุ่ม + ลงขายสินค้า */}
+          <Link
+            href="/sell"
+            className="text-xs sm:text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-xl shadow-sm transition-all active:scale-95"
+          >
+            + ลงขายสินค้า
           </Link>
 
           {/* ปุ่มสลับ Theme */}
           {mounted && (
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="p-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:ring-2 hover:ring-blue-500 transition-all border border-gray-200 dark:border-gray-700"
+              className="p-1.5 sm:p-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:ring-2 hover:ring-blue-500 transition-all border border-gray-200 dark:border-gray-700"
               aria-label="Toggle Theme"
             >
-              {theme === "dark" ? "☀️ โหมดสว่าง" : "🌙 โหมดมืด"}
+              {theme === "dark" ? "☀️" : "🌙"}
             </button>
           )}
         </div>

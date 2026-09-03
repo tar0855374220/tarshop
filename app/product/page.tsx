@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 
-const allProducts = [
+const defaultProducts = [
   { id: 1, title: "หนังสือช่างไฟฟ้ากำลัง ปวช.1", price: 120, location: "โรงอาหารกลาง", category: "หนังสือ" },
   { id: 2, title: "ชุดนักศึกษาชาย มือสอง สภาพ 95%", price: 200, location: "หน้าห้องสมุด", category: "เครื่องแต่งกาย" },
   { id: 3, title: "เครื่องคิดเลขวิทยาศาสตร์ Casio", price: 350, location: "หน้าตึกอำนวยการ", category: "อุปกรณ์การเรียน" },
@@ -13,11 +13,22 @@ const allProducts = [
 ];
 
 export default function ProductPage() {
+  const [products, setProducts] = useState(defaultProducts);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("ทั้งหมด");
   const [selectedLocation, setSelectedLocation] = useState("ทั้งหมด");
 
-  const filteredProducts = allProducts.filter((p) => {
+  // ดึงสินค้าใหม่จาก localStorage มาแสดงร่วมกับสินค้าเดิม
+  useEffect(() => {
+    const savedProducts = JSON.parse(
+      localStorage.getItem("tarshop_products") || "[]"
+    );
+    if (savedProducts.length > 0) {
+      setProducts([...savedProducts, ...defaultProducts]);
+    }
+  }, []);
+
+  const filteredProducts = products.filter((p) => {
     const matchSearch = p.title.toLowerCase().includes(search.toLowerCase());
     const matchCategory = selectedCategory === "ทั้งหมด" || p.category === selectedCategory;
     const matchLocation = selectedLocation === "ทั้งหมด" || p.location === selectedLocation;
@@ -29,9 +40,11 @@ export default function ProductPage() {
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 py-6 space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold">ตลาดสินค้า TarShop</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">ค้นหาอุปกรณ์การเรียน หนังสือ และสิ่งของในวิทยาลัย</p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold">ตลาดสินค้า TarShop</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400">ค้นหาอุปกรณ์การเรียน หนังสือ และสิ่งของในวิทยาลัย</p>
+          </div>
         </div>
 
         {/* Filter Controls */}
