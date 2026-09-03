@@ -15,6 +15,24 @@ export default function SellPage() {
     description: "",
   });
 
+  const [image, setImage] = useState<string | null>(null);
+
+  // ฟังก์ชันแปลงรูปภาพเป็น Base64 String
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        alert("กรุณาเลือกรูปภาพที่มีขนาดไม่เกิน 2MB");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -23,7 +41,6 @@ export default function SellPage() {
       return;
     }
 
-    // สร้างข้อมูลสินค้าใหม่
     const newProduct = {
       id: Date.now(),
       title: form.title,
@@ -31,19 +48,18 @@ export default function SellPage() {
       category: form.category,
       location: form.location,
       description: form.description,
+      image: image || null, // บันทึกรูปภาพ (ถ้ามี)
     };
 
-    // ดึงสินค้าเดิมจาก localStorage (ถ้ามี)
     const existingProducts = JSON.parse(
       localStorage.getItem("tarshop_products") || "[]"
     );
 
-    // บันทึกสินค้าใหม่ลง localStorage
     const updatedProducts = [newProduct, ...existingProducts];
     localStorage.setItem("tarshop_products", JSON.stringify(updatedProducts));
 
     alert("ลงขายสินค้าสำเร็จ!");
-    router.push("/product"); // ส่งผู้ใช้ไปหน้าเลือกดูสินค้า
+    router.push("/product");
   };
 
   return (
@@ -57,11 +73,48 @@ export default function SellPage() {
               ➕ ลงขายสินค้าใหม่
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              กรอกข้อมูลสินค้าเพื่อส่งต่อให้เพื่อนๆ ในวิทยาลัย
+              กรอกข้อมูลและอัปโหลดรูปสินค้าเพื่อส่งต่อในวิทยาลัย
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* อัปโหลดรูปภาพ */}
+            <div>
+              <label className="block text-sm font-semibold mb-1">รูปภาพสินค้า</label>
+              <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-2xl p-4 bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                {image ? (
+                  <div className="relative w-full h-48 rounded-xl overflow-hidden group">
+                    <img
+                      src={image}
+                      alt="Preview"
+                      className="w-full h-full object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setImage(null)}
+                      className="absolute top-2 right-2 bg-red-600 text-white text-xs px-2 py-1 rounded-lg shadow-md hover:bg-red-700 transition-colors"
+                    >
+                      ❌ ลบรูป
+                    </button>
+                  </div>
+                ) : (
+                  <label className="flex flex-col items-center justify-center w-full h-32 cursor-pointer">
+                    <div className="text-3xl mb-1">📸</div>
+                    <span className="text-sm font-semibold text-gray-600 dark:text-gray-400">
+                      คลิกเพื่ออัปโหลดรูปภาพ
+                    </span>
+                    <span className="text-xs text-gray-400">PNG, JPG ไม่เกิน 2MB</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                    />
+                  </label>
+                )}
+              </div>
+            </div>
+
             {/* ชื่อสินค้า */}
             <div>
               <label className="block text-sm font-semibold mb-1">

@@ -3,7 +3,16 @@
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 
-const defaultProducts = [
+type Product = {
+  id: number;
+  title: string;
+  price: number;
+  location: string;
+  category: string;
+  image?: string | null;
+};
+
+const defaultProducts: Product[] = [
   { id: 1, title: "หนังสือช่างไฟฟ้ากำลัง ปวช.1", price: 120, location: "โรงอาหารกลาง", category: "หนังสือ" },
   { id: 2, title: "ชุดนักศึกษาชาย มือสอง สภาพ 95%", price: 200, location: "หน้าห้องสมุด", category: "เครื่องแต่งกาย" },
   { id: 3, title: "เครื่องคิดเลขวิทยาศาสตร์ Casio", price: 350, location: "หน้าตึกอำนวยการ", category: "อุปกรณ์การเรียน" },
@@ -13,12 +22,11 @@ const defaultProducts = [
 ];
 
 export default function ProductPage() {
-  const [products, setProducts] = useState(defaultProducts);
+  const [products, setProducts] = useState<Product[]>(defaultProducts);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("ทั้งหมด");
   const [selectedLocation, setSelectedLocation] = useState("ทั้งหมด");
 
-  // ดึงสินค้าใหม่จาก localStorage มาแสดงร่วมกับสินค้าเดิม
   useEffect(() => {
     const savedProducts = JSON.parse(
       localStorage.getItem("tarshop_products") || "[]"
@@ -40,11 +48,9 @@ export default function ProductPage() {
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 py-6 space-y-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold">ตลาดสินค้า TarShop</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">ค้นหาอุปกรณ์การเรียน หนังสือ และสิ่งของในวิทยาลัย</p>
-          </div>
+        <div>
+          <h1 className="text-2xl font-bold">ตลาดสินค้า TarShop</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">ค้นหาอุปกรณ์การเรียน หนังสือ และสิ่งของในวิทยาลัย</p>
         </div>
 
         {/* Filter Controls */}
@@ -90,8 +96,16 @@ export default function ProductPage() {
                 className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden shadow-sm flex flex-col justify-between"
               >
                 <div>
-                  <div className="h-36 sm:h-44 bg-gray-200 dark:bg-gray-800 w-full relative flex items-center justify-center text-gray-400">
-                    <span className="text-xs">📸 รูปสินค้า</span>
+                  <div className="h-36 sm:h-44 bg-gray-200 dark:bg-gray-800 w-full relative flex items-center justify-center text-gray-400 overflow-hidden">
+                    {item.image ? (
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-xs">📸 ไม่มีรูปสินค้า</span>
+                    )}
                   </div>
                   <div className="p-3 space-y-1.5">
                     <h3 className="font-semibold text-sm line-clamp-2 text-gray-800 dark:text-gray-100">
