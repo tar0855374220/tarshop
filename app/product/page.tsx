@@ -10,31 +10,31 @@ type Product = {
   location: string;
   category: string;
   image?: string | null;
+  description?: string;
 };
 
-const defaultProducts: Product[] = [
-  { id: 1, title: "หนังสือช่างไฟฟ้ากำลัง ปวช.1", price: 120, location: "โรงอาหารกลาง", category: "หนังสือ" },
-  { id: 2, title: "ชุดนักศึกษาชาย มือสอง สภาพ 95%", price: 200, location: "หน้าห้องสมุด", category: "เครื่องแต่งกาย" },
-  { id: 3, title: "เครื่องคิดเลขวิทยาศาสตร์ Casio", price: 350, location: "หน้าตึกอำนวยการ", category: "อุปกรณ์การเรียน" },
-  { id: 4, title: "ไม้ที (T-Square) สำหรับเขียนแบบ", price: 150, location: "ช่างยนต์ / โรงฝึกงาน", category: "อุปกรณ์การเรียน" },
-  { id: 5, title: "รองเท้าคัทชูชาย ไซส์ 42", price: 250, location: "โรงอาหารกลาง", category: "เครื่องแต่งกาย" },
-  { id: 6, title: "กระดานเขียนแบบ A3 สภาพดี", price: 400, location: "หน้าตึกอำนวยการ", category: "อุปกรณ์การเรียน" },
-];
-
 export default function ProductPage() {
-  const [products, setProducts] = useState<Product[]>(defaultProducts);
+  const [products, setProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("ทั้งหมด");
   const [selectedLocation, setSelectedLocation] = useState("ทั้งหมด");
 
+  // ดึงข้อมูลสินค้าที่ผู้ใช้อัปโหลดไว้ใน localStorage เท่านั้น
   useEffect(() => {
     const savedProducts = JSON.parse(
       localStorage.getItem("tarshop_products") || "[]"
     );
-    if (savedProducts.length > 0) {
-      setProducts([...savedProducts, ...defaultProducts]);
-    }
+    setProducts(savedProducts);
   }, []);
+
+  // ฟังก์ชันสำหรับลบสินค้า
+  const handleDeleteProduct = (id: number) => {
+    if (confirm("คุณต้องการลบรายการสินค้านี้ใช่หรือไม่?")) {
+      const updatedProducts = products.filter((item) => item.id !== id);
+      setProducts(updatedProducts);
+      localStorage.setItem("tarshop_products", JSON.stringify(updatedProducts));
+    }
+  };
 
   const filteredProducts = products.filter((p) => {
     const matchSearch = p.title.toLowerCase().includes(search.toLowerCase());
@@ -93,7 +93,7 @@ export default function ProductPage() {
             {filteredProducts.map((item) => (
               <div
                 key={item.id}
-                className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden shadow-sm flex flex-col justify-between"
+                className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden shadow-sm flex flex-col justify-between group relative"
               >
                 <div>
                   <div className="h-36 sm:h-44 bg-gray-200 dark:bg-gray-800 w-full relative flex items-center justify-center text-gray-400 overflow-hidden">
@@ -106,6 +106,14 @@ export default function ProductPage() {
                     ) : (
                       <span className="text-xs">📸 ไม่มีรูปสินค้า</span>
                     )}
+                    {/* ปุ่มลบสินค้า */}
+                    <button
+                      onClick={() => handleDeleteProduct(item.id)}
+                      className="absolute top-2 right-2 bg-red-600/80 hover:bg-red-600 text-white p-1.5 rounded-lg text-xs transition-opacity shadow-md"
+                      title="ลบสินค้า"
+                    >
+                      🗑️
+                    </button>
                   </div>
                   <div className="p-3 space-y-1.5">
                     <h3 className="font-semibold text-sm line-clamp-2 text-gray-800 dark:text-gray-100">
@@ -123,8 +131,10 @@ export default function ProductPage() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-            ❌ ไม่พบสินค้าที่คุณค้นหา
+          <div className="text-center py-16 space-y-3 bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-800">
+            <div className="text-4xl">📦</div>
+            <h3 className="font-bold text-gray-700 dark:text-gray-300">ยังไม่มีสินค้าในระบบ</h3>
+            <p className="text-xs text-gray-400">กดปุ่ม "+ ลงขายสินค้า" เพื่อเริ่มเพิ่มสินค้าแรกของคุณได้เลย!</p>
           </div>
         )}
       </main>

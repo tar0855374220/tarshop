@@ -1,5 +1,17 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Navbar from "./components/Navbar";
+
+type Product = {
+  id: number;
+  title: string;
+  price: number;
+  location: string;
+  category: string;
+  image?: string | null;
+};
 
 const pickupLocations = [
   { id: 1, name: "โรงอาหารกลาง", icon: "🍱", desc: "โต้ะหินอ่อนฝั่งทิศตะวันออก" },
@@ -8,14 +20,16 @@ const pickupLocations = [
   { id: 4, name: "ช่างยนต์ / โรงฝึกงาน", icon: "🔧", desc: "หน้าตึกปฏิบัติการ" },
 ];
 
-const mockProducts = [
-  { id: 1, title: "หนังสือช่างไฟฟ้ากำลัง ปวช.1", price: 120, location: "โรงอาหารกลาง", category: "หนังสือ" },
-  { id: 2, title: "ชุดนักศึกษาชาย มือสอง สภาพ 95%", price: 200, location: "หน้าห้องสมุด", category: "เครื่องแต่งกาย" },
-  { id: 3, title: "เครื่องคิดเลขวิทยาศาสตร์ Casio", price: 350, location: "หน้าตึกอำนวยการ", category: "อุปกรณ์การเรียน" },
-  { id: 4, title: "ไม้ที (T-Square) สำหรับเขียนแบบ", price: 150, location: "ช่างยนต์ / โรงฝึกงาน", category: "อุปกรณ์การเรียน" },
-];
-
 export default function HomePage() {
+  const [recentProducts, setRecentProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    const savedProducts = JSON.parse(
+      localStorage.getItem("tarshop_products") || "[]"
+    );
+    setRecentProducts(savedProducts.slice(0, 4)); // แสดงแค่ 4 รายการล่าสุด
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors">
       <Navbar />
@@ -33,12 +47,18 @@ export default function HomePage() {
             <p className="text-sm sm:text-base opacity-90 leading-relaxed">
               ซื้อง่าย ขายคล่อง ส่งต่อของไม่ได้ใช้ให้รุ่นน้อง นัดรับได้ทันทีในรั้ววิทยาลัย
             </p>
-            <div className="pt-2">
+            <div className="pt-2 flex gap-3">
               <Link
                 href="/product"
                 className="inline-block px-5 py-2.5 bg-white text-blue-600 rounded-xl font-bold text-sm hover:bg-opacity-90 shadow-md transition-all active:scale-95"
               >
                 เลือกซื้อสินค้า
+              </Link>
+              <Link
+                href="/sell"
+                className="inline-block px-5 py-2.5 bg-blue-700/60 hover:bg-blue-700 text-white border border-white/20 rounded-xl font-bold text-sm shadow-md transition-all active:scale-95"
+              >
+                + ลงขายสินค้า
               </Link>
             </div>
           </div>
@@ -71,32 +91,47 @@ export default function HomePage() {
               ดูทั้งหมด →
             </Link>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-            {mockProducts.map((item) => (
-              <Link
-                key={item.id}
-                href="/product"
-                className="group rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden shadow-sm hover:border-blue-500/50 transition-all flex flex-col justify-between"
-              >
-                <div>
-                  <div className="h-36 sm:h-44 bg-gray-200 dark:bg-gray-800 w-full relative flex items-center justify-center text-gray-400">
-                    <span className="text-xs">📸 รูปสินค้า</span>
+
+          {recentProducts.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+              {recentProducts.map((item) => (
+                <Link
+                  key={item.id}
+                  href="/product"
+                  className="group rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden shadow-sm hover:border-blue-500/50 transition-all flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="h-36 sm:h-44 bg-gray-200 dark:bg-gray-800 w-full relative flex items-center justify-center text-gray-400 overflow-hidden">
+                      {item.image ? (
+                        <img
+                          src={item.image}
+                          alt={item.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      ) : (
+                        <span className="text-xs">📸 ไม่มีรูปสินค้า</span>
+                      )}
+                    </div>
+                    <div className="p-3 space-y-1.5">
+                      <h3 className="font-semibold text-sm line-clamp-2 text-gray-800 dark:text-gray-100 group-hover:text-blue-600">
+                        {item.title}
+                      </h3>
+                      <p className="text-base font-extrabold text-blue-600 dark:text-blue-400">
+                        ฿{item.price}
+                      </p>
+                    </div>
                   </div>
-                  <div className="p-3 space-y-1.5">
-                    <h3 className="font-semibold text-sm line-clamp-2 text-gray-800 dark:text-gray-100 group-hover:text-blue-600">
-                      {item.title}
-                    </h3>
-                    <p className="text-base font-extrabold text-blue-600 dark:text-blue-400">
-                      ฿{item.price}
-                    </p>
+                  <div className="p-3 pt-0 text-[11px] text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-800/60 mt-2">
+                    <span>📍 นัดรับ: {item.location}</span>
                   </div>
-                </div>
-                <div className="p-3 pt-0 text-[11px] text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-800/60 mt-2">
-                  <span>📍 นัดรับ: {item.location}</span>
-                </div>
-              </Link>
-            ))}
-          </div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-10 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 text-gray-500 dark:text-gray-400 text-sm">
+              ยังไม่มีสินค้ามาใหม่ในขณะนี้
+            </div>
+          )}
         </section>
       </main>
     </div>
