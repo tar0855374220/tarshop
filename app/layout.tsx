@@ -1,10 +1,9 @@
-import type { Metadata } from "next";
-import { Providers } from "./providers";
 import "./globals.css";
+import { CartProvider } from "./context/CartContext";
 
-export const metadata: Metadata = {
-  title: "TarShop - ตลาดนัดออนไลน์สำหรับเด็กวิทยาลัย",
-  description: "แหล่งรวมสินค้า อุปกรณ์การเรียน และสิ่งของส่งต่อในรั้ววิทยาลัย",
+export const metadata = {
+  title: "TarShop - ตลาดนัดวิทยาลัย",
+  description: "ซื้อขายของมือสอง นัดรับง่ายในวิทยาลัย",
 };
 
 export default function RootLayout({
@@ -13,9 +12,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="th" suppressHydrationWarning>
-      <body className="bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100 transition-colors">
-        <Providers>{children}</Providers>
+    <html lang="th">
+      <body className="antialiased bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
+        <CartProvider>{children}</CartProvider>
       </body>
     </html>
   );

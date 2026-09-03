@@ -2,27 +2,14 @@
 
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
-
-type Product = {
-  id: number;
-  title: string;
-  price: number;
-  location: string;
-  category: string;
-  promptpay?: string;
-  contact?: string;
-  description?: string;
-  image?: string | null;
-};
+import { useCart, Product } from "../context/CartContext";
 
 export default function ProductPage() {
+  const { addToCart } = useCart();
   const [products, setProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("ทั้งหมด");
   const [selectedLocation, setSelectedLocation] = useState("ทั้งหมด");
-
-  // State สำหรับ Modal ชำระเงิน
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     const savedProducts = JSON.parse(
@@ -53,7 +40,7 @@ export default function ProductPage() {
       <main className="max-w-7xl mx-auto px-4 py-6 space-y-6">
         <div>
           <h1 className="text-2xl font-bold">ตลาดสินค้า TarShop</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">เลือกดูสินค้า นัดรับในวิทยาลัย และชำระเงินได้ง่ายๆ</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">เลือกดูสินค้าและใส่ตะกร้าเพื่อชำระเงินรวมกันได้เลย</p>
         </div>
 
         {/* Filter Controls */}
@@ -90,7 +77,7 @@ export default function ProductPage() {
           </select>
         </div>
 
-        {/* Product Items */}
+        {/* Product Grid */}
         {filteredProducts.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {filteredProducts.map((item) => (
@@ -125,13 +112,16 @@ export default function ProductPage() {
                   </div>
                 </div>
 
-                {/* ปุ่มสั่งซื้อ / ชำระเงิน */}
+                {/* ปุ่มใส่ตะกร้า */}
                 <div className="p-3 pt-0">
                   <button
-                    onClick={() => setSelectedProduct(item)}
-                    className="w-full py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs rounded-xl shadow-sm transition-all active:scale-95"
+                    onClick={() => {
+                      addToCart(item);
+                      alert("เพิ่มสินค้าลงในตะกร้าเรียบร้อยแล้ว!");
+                    }}
+                    className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm transition-all active:scale-95 flex items-center justify-center gap-1"
                   >
-                    💳 ชำระเงิน / สั่งซื้อ
+                    🛒 เพิ่มลงตะกร้า
                   </button>
                 </div>
               </div>
@@ -141,74 +131,10 @@ export default function ProductPage() {
           <div className="text-center py-16 space-y-3 bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-800">
             <div className="text-4xl">📦</div>
             <h3 className="font-bold text-gray-700 dark:text-gray-300">ยังไม่มีสินค้าในระบบ</h3>
-            <p className="text-xs text-gray-400">กดปุ่ม "+ ลงขายสินค้า" เพื่อเริ่มเพิ่มสินค้าแรกของคุณได้เลย!</p>
+            <p className="text-xs text-gray-400">กดปุ่ม "+ ลงขาย" เพื่อเริ่มเพิ่มสินค้าแรกของคุณได้เลย!</p>
           </div>
         )}
       </main>
-
-      {/* Modal ช่องทางการชำระเงิน */}
-      {selectedProduct && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-white dark:bg-gray-900 max-w-sm w-full rounded-3xl p-6 border border-gray-200 dark:border-gray-800 shadow-2xl space-y-4">
-            <div className="flex justify-between items-start">
-              <h3 className="font-bold text-lg text-gray-900 dark:text-white">
-                ชำระเงิน & ติดต่อสั่งซื้อ
-              </h3>
-              <button
-                onClick={() => setSelectedProduct(null)}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="space-y-2 text-center border-b border-gray-100 dark:border-gray-800 pb-3">
-              <p className="font-semibold text-sm line-clamp-1">{selectedProduct.title}</p>
-              <p className="text-2xl font-black text-blue-600 dark:text-blue-400">
-                ฿{selectedProduct.price}
-              </p>
-            </div>
-
-            {/* แสดง QR Code PromptPay ถ้ามีเบอร์ PromptPay */}
-            {selectedProduct.promptpay ? (
-              <div className="flex flex-col items-center space-y-2 py-2">
-                <span className="text-xs font-semibold text-gray-500">
-                  สแกนจ่ายผ่าน PromptPay
-                </span>
-                <img
-                  src={`https://promptpay.io/${selectedProduct.promptpay}/${selectedProduct.price}.png`}
-                  alt="PromptPay QR Code"
-                  className="w-48 h-48 rounded-xl border border-gray-200 shadow-sm"
-                />
-                <p className="text-xs text-gray-400">เบอร์: {selectedProduct.promptpay}</p>
-              </div>
-            ) : (
-              <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-xl p-3 text-center">
-                <p className="text-xs text-amber-700 dark:text-amber-300 font-semibold">
-                  💵 ชำระเงินสด / โอนเงินเมื่อนัดรับสินค้า
-                </p>
-              </div>
-            )}
-
-            {/* ช่องทางติดต่อผู้ขาย */}
-            <div className="bg-gray-50 dark:bg-gray-800/60 p-3 rounded-2xl space-y-1 text-xs">
-              <p className="font-bold text-gray-700 dark:text-gray-300">📱 ช่องทางติดต่อผู้ขาย:</p>
-              <p className="text-blue-600 dark:text-blue-400 font-medium">{selectedProduct.contact || "ไม่ได้ระบุ"}</p>
-              <p className="text-gray-500 dark:text-gray-400">📍 นัดรับที่: {selectedProduct.location}</p>
-            </div>
-
-            <button
-              onClick={() => {
-                alert("ส่งหลักฐานหรือทักแชทหาผู้ขายผ่านช่องทางติดต่อเพื่อยืนยันนัดรับสินค้า");
-                setSelectedProduct(null);
-              }}
-              className="w-full py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold text-xs rounded-xl shadow-md transition-all active:scale-95"
-            >
-              ✅ ติดต่อสั่งซื้อ / ส่งสลิป
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
